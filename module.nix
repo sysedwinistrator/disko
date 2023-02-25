@@ -41,6 +41,10 @@ in
       export PATH=${lib.makeBinPath (diskoLib.packages cfg.devices pkgs)}:$PATH
       ${diskoLib.create cfg.devices}
     '';
+    system.build.zfsDataSetScript = pkgs.writers.writeBash "disko-create" ''
+      export PATH=${lib.makeBinPath (types.diskoLib.packages cfg.devices pkgs)}:$PATH
+      ${types.diskoLib.createZfsDataSets cfg.devices}
+    '';
 
     system.build.mountScript = (diskoLib.writeCheckedBash { inherit pkgs checked; }) "disko-mount" ''
       export PATH=${lib.makeBinPath (diskoLib.packages cfg.devices pkgs)}:$PATH

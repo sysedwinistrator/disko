@@ -211,6 +211,24 @@ let
     */
     meta = devices: diskoLib.deepMergeMap (dev: dev._meta) (flatten (map attrValues (attrValues devices)));
 
+    /* Takes a disko device specification and returns a string which creates the zfs datasets
+
+       create :: lib.types.devices -> str
+    */
+
+    createZfsDataSets = devices:
+      let
+        datasets = lib.attrsets.collect (dev: dev.type or "none" == "zfs_dataset") (mapAttrs (zpoolName: zpool: mapAttrs (_: dataset: dataset // { _create = dataset._create {zpool=zpoolName;}; }) zpool.datasets) devices.zpool);
+      in
+      ''
+        set -efux
+
+        disko_devices_dir=$(mktemp -d)
+        trap 'rm -rf "$disko_devices_dir"' EXIT
+        mkdir -p "$disko_devices_dir"
+
+        ${concatMapStrings (dataset: dataset._create) datasets}
+      '';
     /* Takes a disko device specification and returns a string which formats the disks
 
        create :: lib.types.devices -> str
