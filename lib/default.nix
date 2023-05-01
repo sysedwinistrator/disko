@@ -218,7 +218,7 @@ let
 
     createZfsDataSets = devices:
       let
-        datasets = lib.attrsets.collect (dev: dev.type or "none" == "zfs_dataset") (mapAttrs (zpoolName: zpool: mapAttrs (_: dataset: dataset // { _create = dataset._create { zpool = zpoolName; }; }) zpool.datasets) devices.zpool);
+        datasets = lib.attrsets.collect (dev: dev.type or "none" == "zfs_fs") (mapAttrs (zpoolName: zpool: mapAttrs (_: dataset: dataset // { _create = dataset._create { zpool = zpoolName; }; }) zpool.datasets) devices.zpool);
       in
       concatMapStrings (dataset: dataset._create) datasets;
     /* Takes a disko device specification and returns a string which formats the disks
