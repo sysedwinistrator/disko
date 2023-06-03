@@ -43,8 +43,8 @@ in
     '';
     system.build.zfsDataSetScript = pkgs.writers.writeBash "disko-create" ''
       export PRE_DISKO_PATH=$PATH
-      export PATH=${lib.makeBinPath (types.diskoLib.packages cfg.devices pkgs)}:$PATH
-      ${types.diskoLib.createZfsDataSets cfg.devices}
+      export PATH=${lib.makeBinPath (diskoLib.packages cfg.devices pkgs)}:$PATH
+      ${diskoLib.createZfsDataSets cfg.devices}
       export PATH=$PRE_DISKO_PATH
     '';
 
